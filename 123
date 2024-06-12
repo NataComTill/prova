@@ -1,0 +1,105 @@
+1. Modelo Entidade-Relacionamento (MER)
+Entidades e Relacionamentos:
+
+Clínica
+A clínica oferece várias especialidades.
+Especialidade
+Atributos: código (PK), descrição, carga horária semanal, número de vagas.
+Médico
+Atributos: código (PK), nome, endereço, telefone.
+Relacionamento: um médico tem uma ou mais especialidades.
+Paciente
+Atributos: CPF (PK), nome, endereço, telefone, e-mail.
+Consulta
+Atributos: código (PK), data, paciente (FK), especialidade (FK), carga horária.
+Relacionamento: uma consulta pode incluir uma ou mais especialidades e é associada a um único paciente.
+
+Diagrama do MER
+
+[Clínica]
+    |
+    | oferece
+    v
+[Especialidade] <-- possui -- [Médico]
+    |
+    | está em
+    v
+[Consulta] <-- associada a -- [Paciente]
+
+2. Modelo Relacional (MR)
+Tabelas e seus atributos:
+
+Especialidade
+
+Código (PK)
+Descrição
+Carga Horária Semanal
+Número de Vagas
+Médico
+
+Código (PK)
+Nome
+Endereço
+Telefone
+Especialidade (FK)
+Paciente
+
+CPF (PK)
+Nome
+Endereço
+Telefone
+Email
+Consulta
+
+Código (PK)
+Data
+Paciente (FK)
+Especialidade (FK)
+Carga Horária
+
+3. Normalização das Tabelas
+
+Todas as tabelas estão normalizadas até a Terceira Forma Normal (3FN):
+
+Primeira Forma Normal (1FN): Todos os atributos contêm valores atômicos.
+
+Segunda Forma Normal (2FN): Todos os atributos não-chave dependem da chave primária.
+
+Terceira Forma Normal (3FN): Não existem dependências transitivas.
+
+4. Criação do SQL Correspondente
+
+-- Criação das tabelas
+CREATE TABLE Especialidade (
+    codigo INT PRIMARY KEY,
+    descricao VARCHAR(255),
+    carga_horaria_semanal INT,
+    numero_vagas INT
+);
+
+CREATE TABLE Medico (
+    codigo INT PRIMARY KEY,
+    nome VARCHAR(255),
+    endereco VARCHAR(255),
+    telefone VARCHAR(20),
+    especialidade INT,
+    FOREIGN KEY (especialidade) REFERENCES Especialidade(codigo)
+);
+
+CREATE TABLE Paciente (
+    cpf CHAR(11) PRIMARY KEY,
+    nome VARCHAR(255),
+    endereco VARCHAR(255),
+    telefone VARCHAR(20),
+    email VARCHAR(255)
+);
+
+CREATE TABLE Consulta (
+    codigo INT PRIMARY KEY,
+    data DATE,
+    paciente CHAR(11),
+    especialidade INT,
+    carga_horaria INT,
+    FOREIGN KEY (paciente) REFERENCES Paciente(cpf),
+    FOREIGN KEY (especialidade) REFERENCES Especialidade(codigo)
+);
